@@ -177,12 +177,32 @@ export default function TodoDetail({ todo, onUpdateTodo }: TodoDetailProps) {
                 >
                 <td className="px-6 py-4 whitespace-nowrap font-medium text-slate-300">
                   <div className="flex items-center space-x-2">
-                    <span>{item.key || '-'}</span>
+                    <span 
+                      className="block"
+                      title={item.key || ''}
+                    >
+                      {item.key ? (
+                        <>
+                          {/* Desktop: show up to 30 chars */}
+                          <span className="hidden md:inline">
+                            {item.key.length > 30 
+                              ? `${item.key.substring(0, 30)}...` 
+                              : item.key}
+                          </span>
+                          {/* Mobile: show up to 10 chars */}
+                          <span className="md:hidden">
+                            {item.key.length > 10 
+                              ? `${item.key.substring(0, 10)}...` 
+                              : item.key}
+                          </span>
+                        </>
+                      ) : '-'}
+                    </span>
                     {item.key && (
                       <button
                         onClick={() => copyToClipboard(item.key!)}
-                        className="text-blue-400 hover:text-blue-300 p-1 rounded transition-colors duration-300"
-                        title="Copy key"
+                        className="text-blue-400 hover:text-blue-300 p-1 rounded transition-colors duration-300 flex-shrink-0"
+                        title="Copy full key"
                       >
                         <ClipboardIcon className="h-4 w-4" />
                       </button>
@@ -191,12 +211,32 @@ export default function TodoDetail({ todo, onUpdateTodo }: TodoDetailProps) {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap font-medium text-slate-300">
                   <div className="flex items-center space-x-2">
-                    <span>{item.value || '-'}</span>
+                    <span 
+                      className="block"
+                      title={item.value || ''}
+                    >
+                      {item.value ? (
+                        <>
+                          {/* Desktop: show up to 30 chars */}
+                          <span className="hidden md:inline">
+                            {item.value.length > 30 
+                              ? `${item.value.substring(0, 30)}...` 
+                              : item.value}
+                          </span>
+                          {/* Mobile: show up to 10 chars */}
+                          <span className="md:hidden">
+                            {item.value.length > 10 
+                              ? `${item.value.substring(0, 10)}...` 
+                              : item.value}
+                          </span>
+                        </>
+                      ) : '-'}
+                    </span>
                     {item.value && (
                       <button
                         onClick={() => copyToClipboard(item.value!)}
-                        className="text-blue-400 hover:text-blue-300 p-1 rounded transition-colors duration-300"
-                        title="Copy value"
+                        className="text-blue-400 hover:text-blue-300 p-1 rounded transition-colors duration-300 flex-shrink-0"
+                        title="Copy full value"
                       >
                         <ClipboardIcon className="h-4 w-4" />
                       </button>
