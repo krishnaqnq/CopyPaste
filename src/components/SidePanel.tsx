@@ -154,8 +154,7 @@ export default function SidePanel({
               <li 
                 key={todo._id} 
                 className="hover:bg-slate-900 transition-all duration-300"
-                data-aos="fade-up"
-                data-aos-delay={100 + index * 50}
+                
               >
                 <div className="flex items-center justify-between p-4">
                   <div className="flex-1 min-w-0">
@@ -194,7 +193,7 @@ export default function SidePanel({
             {filteredTodos.length === 0 && !isLoading && (
               <li 
                 className="p-8 text-center text-slate-400"
-                data-aos="fade-up"
+                
               >
                 {searchQuery ? 'No projects found matching your search.' : 'No Projects yet. Create one to get started.'}
               </li>
