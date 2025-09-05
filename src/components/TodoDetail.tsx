@@ -36,6 +36,8 @@ export default function TodoDetail({ todo, onUpdateTodo }: TodoDetailProps) {
   const [currentItem, setCurrentItem] = useState<Item | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   const copyToClipboard = async (text: string) => {
     try {
@@ -59,12 +61,27 @@ export default function TodoDetail({ todo, onUpdateTodo }: TodoDetailProps) {
     setIsModalOpen(true);
   };
 
-  const handleDeleteItem = (itemId: string) => {
-    const updatedTodo = {
-      ...todo,
-      items: todo.items.filter((item) => item._id !== itemId),
-    };
-    onUpdateTodo(updatedTodo);
+  const handleDeleteItem = (item: Item) => {
+    setItemToDelete(item);
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteItem = () => {
+    if (itemToDelete) {
+      const updatedTodo = {
+        ...todo,
+        items: todo.items.filter((item) => item._id !== itemToDelete._id),
+      };
+      onUpdateTodo(updatedTodo);
+      setItemToDelete(null);
+      setIsDeleteConfirmOpen(false);
+      toast.success('Item deleted successfully');
+    }
+  };
+
+  const cancelDeleteItem = () => {
+    setItemToDelete(null);
+    setIsDeleteConfirmOpen(false);
   };
 
   const handleSubmitItem = (formData: Item) => {
@@ -251,7 +268,7 @@ export default function TodoDetail({ todo, onUpdateTodo }: TodoDetailProps) {
                     <PencilIcon className="h-5 w-5" />
                   </button>
                   <button
-                    onClick={() => handleDeleteItem(item._id)}
+                    onClick={() => handleDeleteItem(item)}
                     className="text-red-400 hover:text-red-300 p-1.5 rounded-full hover:bg-slate-900 transition-all duration-300"
                   >
                     <TrashIcon className="h-5 w-5" />
@@ -351,6 +368,66 @@ export default function TodoDetail({ todo, onUpdateTodo }: TodoDetailProps) {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={isDeleteConfirmOpen}
+        onClose={cancelDeleteItem}
+        className="fixed z-10 inset-0 overflow-y-auto"
+      >
+        <div className="flex items-center justify-center min-h-screen p-4">
+          <div className="fixed inset-0 bg-black backdrop-blur-sm" aria-hidden="true" />
+
+          <div
+            className="relative bg-slate-900 rounded-2xl w-full max-w-md mx-4 p-6 shadow-2xl border border-gray-300"
+            data-aos="zoom-in"
+          >
+            <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
+              <TrashIcon className="w-6 h-6 text-red-600" />
+            </div>
+            
+            <h3 className="text-lg font-medium mb-2 text-center text-white">
+              Delete Item
+            </h3>
+            
+            <p className="text-sm text-slate-400 text-center mb-6">
+              Are you sure you want to delete this item? This action cannot be undone.
+            </p>
+            
+            {itemToDelete && (
+              <div className="bg-slate-800 rounded-lg p-3 mb-6 border border-slate-700">
+                <div className="text-sm">
+                  <div className="mb-2">
+                    <span className="text-yellow-400 font-medium">Key:</span>
+                    <span className="text-slate-300 ml-2">{itemToDelete.key || '-'}</span>
+                  </div>
+                  <div>
+                    <span className="text-yellow-400 font-medium">Value:</span>
+                    <span className="text-slate-300 ml-2">{itemToDelete.value || '-'}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={cancelDeleteItem}
+                className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-700 rounded-md hover:bg-slate-600 transition-colors duration-300 border border-gray-300"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteItem}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors duration-300"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       </Dialog>
